@@ -1,0 +1,168 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema IntLand
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema IntLand
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `IntLand` DEFAULT CHARACTER SET utf8 ;
+USE `IntLand` ;
+
+-- -----------------------------------------------------
+-- Table `IntLand`.`Wallet`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IntLand`.`Wallet` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NULL,
+  `intCoins` INT NULL,
+  `glizzyGold` INT NULL,
+  `darkDiamonds` INT NULL,
+  `mudPieces` INT NULL,
+  `mudArtifacts` INT NULL,
+  `created_on` VARCHAR(45) NULL,
+  `created_by` VARCHAR(255) NULL,
+  `modified_on` VARCHAR(45) NULL,
+  `modified_by` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `userId_idx` (`userId` ASC) VISIBLE,
+  CONSTRAINT `fk_userId_wal`
+    FOREIGN KEY (`userId`)
+    REFERENCES `IntLand`.`User` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `IntLand`.`MemeList`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IntLand`.`MemeList` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL,
+  `evoLevel` INT NULL,
+  `evoPrevious` INT NULL,
+  `evoNext` INT NULL,
+  `generated` INT NULL,
+  `created_on` VARCHAR(45) NULL,
+  `created_by` VARCHAR(255) NULL,
+  `modified_on` VARCHAR(45) NULL,
+  `modified_by` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `IntLand`.`Meme`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IntLand`.`Meme` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NULL,
+  `memeListId` INT NULL,
+  `collectionId` INT NULL,
+  `level` INT NULL DEFAULT 1,
+  `experience` INT NULL DEFAULT 0,
+  `created_on` VARCHAR(45) NULL,
+  `created_by` VARCHAR(255) NULL,
+  `modified_on` VARCHAR(45) NULL,
+  `modified_by` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_userId_idx` (`userId` ASC) VISIBLE,
+  INDEX `fk_memeListId_idx` (`memeListId` ASC) VISIBLE,
+  INDEX `fk_collectionId_idx` (`collectionId` ASC) VISIBLE,
+  CONSTRAINT `fk_userId_meme`
+    FOREIGN KEY (`userId`)
+    REFERENCES `IntLand`.`User` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_memeListId_meme`
+    FOREIGN KEY (`memeListId`)
+    REFERENCES `IntLand`.`MemeList` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_collectionId_meme`
+    FOREIGN KEY (`collectionId`)
+    REFERENCES `IntLand`.`Collection` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `IntLand`.`Collection`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IntLand`.`Collection` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NULL,
+  `walletId` INT NULL,
+  `memeId` INT NULL,
+  `created_on` VARCHAR(45) NULL,
+  `created_by` VARCHAR(255) NULL,
+  `modified_on` VARCHAR(45) NULL,
+  `modified_by` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_userId_idx` (`userId` ASC) VISIBLE,
+  INDEX `fk_walletId_idx` (`walletId` ASC) VISIBLE,
+  INDEX `fk_memeId_idx` (`memeId` ASC) VISIBLE,
+  CONSTRAINT `fk_userId_col`
+    FOREIGN KEY (`userId`)
+    REFERENCES `IntLand`.`User` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_walletId_col`
+    FOREIGN KEY (`walletId`)
+    REFERENCES `IntLand`.`Wallet` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_memeId_col`
+    FOREIGN KEY (`memeId`)
+    REFERENCES `IntLand`.`Meme` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `IntLand`.`User`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `IntLand`.`User` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(255) NULL,
+  `discordId` VARCHAR(255) NOT NULL,
+  `walletId` INT NULL,
+  `collectionId` INT NULL,
+  `created_on` VARCHAR(45) NULL,
+  `created_by` VARCHAR(255) NULL,
+  `modified_on` VARCHAR(45) NULL,
+  `modified_by` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_wallet_us_idx` (`walletId` ASC) VISIBLE,
+  INDEX `fk_collection_us_idx` (`collectionId` ASC) VISIBLE,
+  CONSTRAINT `fk_wallet_us`
+    FOREIGN KEY (`walletId`)
+    REFERENCES `IntLand`.`Wallet` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_collection_us`
+    FOREIGN KEY (`collectionId`)
+    REFERENCES `IntLand`.`Collection` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+-----------
+
+  
+	Docker IntLand 
+	-- youShallNotPass
